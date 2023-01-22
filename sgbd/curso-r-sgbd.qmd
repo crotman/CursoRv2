@@ -1,0 +1,161 @@
+---
+title: "Análise de Dados em R - SGBDs"
+format: 
+    revealjs:
+        footer: "Bruno Crotman - 2023"
+        transition: slide
+        incremental: true
+        logo: DataQuant.svg
+        scrollable: true   
+        code-fold: true   
+        code-summary: "R"
+
+editor: visual
+---
+
+```{r include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(DBI)
+library(reactable)
+
+```
+
+# Conteúdo
+
+## Conteúdo
+
+-   O que é um SGBD - Sistema Gerenciador de Banco de Dados
+
+-   Modelagem de Banco de Dados
+
+-   DBI - conexão, escrita, leitura
+
+-   dbplyr - usando os verbos da dplyr pra consulta
+
+-   Manipulação individual de linhas
+
+# SGBD - Sistema Gerenciador de Banco de Dados
+
+## Características de um SGBD
+
+-   SGBD (DBMS em inglês): software que gerencia serviços típicos de um banco de dados
+
+-   Escopo: Bancos de Dados relacionais (RDBMS)
+
+-   Serviços típicos:
+
+    -   Acesso de consulta
+
+    -   Alteração e concorrência
+
+    -   Transações (ACID - atomicidade, consistência, isolamento, durabilidade)
+
+    -   Armazenamento e organização de estruturas como índices
+
+    -   Rodar stored procedures 🛑
+
+## Bancos de Dados Relacionais
+
+-   Proposto por E. F. Codd (1970)
+
+-   Relações (Relations, listas de tuplas, ou tabelas)
+
+    -   \~Dataframe
+
+    -   Identificadas por uma chave (subconjunto dos atributos ou colunas)
+
+    -   Relation $\neq$ Relationship
+
+    ![Tabela de um banco relacional](Relational_database_terms.svg.png)
+
+## Bancos de Dados Relacionais - Um pouco de vocabulário
+
+-   Domínio - valores possíveis para um campo
+
+-   Restrições (constraints) - restrições de domínio ou integridade das relações
+
+-   Chave Primária - Um tipo de restrição. Existe uma por tabela. Subconjunto dos atributos que identifica as tuplas. As do tipo *surrogate* não têm significado de negócio.
+
+-   Chave estrangeira - Um tipo de restrição. Subconjunto dos atributos que se relaciona com uma chave primária de outra tabela.
+
+-   Índice - estrutura mantida pelo SGBD que fornece acesso rápido a valores do banco. veremos adiante.
+
+## Um exemplo de banco relacional
+
+Este é um Modelo Entidade-Relacionamento de um banco de dados
+
+![Exemplo de banco de dados relacional](sqlite-sample-database-color.jpg)
+
+## Operações Relacionais
+
+-   Operações relacionais (já conhecemos essas operações, pois já as executamos em dataframes usando verbos da dplyr)
+
+    -   Operações relacionais baseadas nas operações de conjunto da matemática
+
+        -   união
+
+        -   interseção
+
+        -   diferença
+
+        -   produto cartesiano
+
+    -   Operações relacionais específicas principais
+
+        -   seleção
+
+        -   projeção
+
+        -   join
+
+## Operações Relacionais - União
+
+::: nonincremental
+-   Conexão
+
+```{r}
+conexao <- dbConnect(RSQLite::SQLite(), "sample/chinook.db")
+
+```
+
+------------------------------------------------------------------------
+
+-   Tabela Genres
+
+```{r}
+genres <- tbl(conexao, "genres") %>% 
+    collect()
+
+head(genres)
+
+```
+
+------------------------------------------------------------------------
+
+
+-   Tabela Tracks
+
+```{r}
+
+tracks <- tbl(conexao, "tracks") %>% 
+    collect()
+
+head(tracks)
+
+```
+:::
+
+## Operações Relacionais - Interseção
+
+## Operações Relacionais - Diferença
+
+## Operações Relacionais - Produto Cartesiano
+
+## Operações Relacionais - Seleção
+
+## Operações Relacionais - Projeção
+
+## Operações Relacionais - Join
